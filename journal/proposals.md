@@ -4005,3 +4005,28 @@ audited: the gates working, not avoidance). Relaxation fork NOT MET
 (21st; f3 +0.050 / f4 +0.006). No reverts of hourly edits.
 risk.json notes compacted from 27KB to 2KB, and 3 closed
 schedule.json watch items pruned (19.7KB).
+
+## 2026-10-07 04:45Z — operator machine is geo-blocked from gamma (HTTP 451)
+
+**Symptom.** On the 04:42Z FULL (operator machine, lease acquired and
+written), `core/resolve.py` got `HTTP Error 451: Unavailable For Legal
+Reasons` on every gamma-api.polymarket.com/markets/<id> fetch: 47 of 47
+before the 10-minute tool timeout, 3 retries each. The open ledger rows
+(1193094 Sweden PM, 4424387 RBI, 5194672 Parcl NYC, 5204549 USGS) were
+among them. No prior 451 appears anywhere in journal/. Cloud cycles
+through 02:14Z read gamma normally, so this is this machine's egress (a
+VPN or region change), not Polymarket-wide.
+
+**Consequences.** Nothing settles from this runner. scan.py has no pool,
+so no screen and no research quotes. ledger.py place has no book. A FULL
+on this runner degenerates into retro-only. A resolve pass takes over 10
+minutes of retries and still settles nothing. The lease is held that
+whole time, so the cloud runner is demoted to LIGHT for no gain.
+
+**Asks (operator).** (1) Restore this machine's route to Polymarket
+(VPN/region) before the next `./loop.sh` run, and before any `--real`
+run, since real.py's order path presumably shares the same egress. (2)
+Have loop.sh preflight one gamma GET. On 451/403, either skip the run or
+run it LIGHT without taking the lease, so the cloud runner keeps the
+FULL slot. (3) Optionally, make resolve.py fail fast after N consecutive
+451s rather than retrying every market 3 times.

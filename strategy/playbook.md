@@ -7612,7 +7612,25 @@ series gave 0/28 3-day windows low enough, so the low side may carry AIS
 information I cannot see. Grade that skew at settlement. The list is now
 Parcl, USGS M5.5+, PortWatch chokepoint MA. Hormuz uses the same layer
 but the zero-transit rows are min-touch on daily counts, not the MA, so
-the match check does not carry over to them.
+the match check does not carry over to them. **2026-10-07
+(RETRO-20261007-0445):** both Hormuz legs have now settled consistent
+with the PortWatch daily series (Sep30 No, Oct31 Yes). The day-level
+match (which date was the zero) is still owed. On the one graded long
+leg (d910eebe71cd), shrinking the raw hazard 0.50 toward a
+flat-term-structure book gave 0.38 and cost Brier (0.384 vs 0.250 raw,
+0.624 mid). Pre-registered, not yet a rule: the next PortWatch min-touch
+row writes `raw=<p>` in its note next to the recorded estimate, so the
+shrink itself can be graded.
+
+## Settlement grading on every tick type (2026-10-07, RETRO-20261007-0445)
+
+CYCLE.md step 3 says "positions", but here a settled FORECAST counts too
+(schedule.json _comment, DEEP-2026-09-02). On a TRIGGERED tick, read
+resolve.py's forecast count before deciding there is no retro to write.
+Evidence: on the 2026-10-07 01:59Z TRIGGERED tick, resolve settled
+d910eebe71cd (an OVV row, CF +$16.74) and 3f0a133362f6, and the log
+said "retro skipped per step3 'positions'". It is the third instance
+(2026-09-08, 2026-09-11, 2026-10-07).
 
 ## Forecast hygiene: supersede the stale sibling in the same cycle (2026-09-30 18:15Z, LIGHT retro)
 
