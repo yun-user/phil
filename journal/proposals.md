@@ -4030,3 +4030,12 @@ Have loop.sh preflight one gamma GET. On 451/403, either skip the run or
 run it LIGHT without taking the lease, so the cloud runner keeps the
 FULL slot. (3) Optionally, make resolve.py fail fast after N consecutive
 451s rather than retrying every market 3 times.
+
+**Recurrence 2026-10-07 05:38Z.** The next operator FULL hit the same
+block: 65 of 65 gamma fetches returned 451 before I stopped resolve.py
+at the 10-minute mark. score.py could not mark-to-market any of the 4
+open rows (clob book GETs failed). That is 2 consecutive operator FULLs
+with nothing settled, nothing scanned and no bets, while each held the
+lease for about 15 minutes. Asks (1) and (2) above still stand. Until
+the route is fixed, every operator tick is dead weight and pushes the
+cloud runner out of its FULL slot.
